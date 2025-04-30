@@ -1,0 +1,32 @@
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { useCart } from '../context/CartContext';
+
+function ProductListing() {
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
+  const { addToCart } = useCart();
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      const res = await axios.get(`https://fakestoreapi.com/products/${id}`);
+      setProduct(res.data);
+    };
+    fetchProduct();
+  }, [id]);
+
+  if (!product) return <p>Loading...</p>;
+
+  return (
+    <div style={{ padding: '2rem' }}>
+      <h2>{product.title}</h2>
+      <img src={product.image} alt={product.title} style={{ height: '200px' }} />
+      <p>{product.description}</p>
+      <h3>${product.price}</h3>
+      <button onClick={() => addToCart(product)}>Add to Cart</button>
+    </div>
+  );
+}
+
+export default ProductListing
